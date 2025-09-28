@@ -153,27 +153,16 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         );
 
         if (registeredUser) {
-          // Use anonymous authentication and link to profile
-          const { data, error } = await supabase.auth.signInAnonymously();
-          
-          if (error) {
-            console.error('Anonymous auth error:', error);
-            return false;
-          }
-
-          // Update the profile with the user's data
-          if (data.user) {
-            const { error: updateError } = await supabase
-              .from('profiles')
-              .update({ user_id: data.user.id })
-              .eq('id', registeredUser.id);
-
-            if (updateError) {
-              console.error('Profile update error:', updateError);
-              return false;
-            }
-          }
-
+          // Create client user without Supabase auth
+          const clientUser: User = {
+            id: registeredUser.id,
+            firstName: registeredUser.firstName,
+            fullName: `${registeredUser.firstName} ${registeredUser.lastName}`,
+            role: 'client',
+            whatsappLast4: registeredUser.whatsappLast4
+          };
+          setUser(clientUser);
+          localStorage.setItem('cgpl-auth-user', JSON.stringify(clientUser));
           return true;
         }
       }
@@ -188,30 +177,26 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     setIsLoading(true);
     
     try {
-      // Check if user already exists in Supabase
-      const { data: existingProfile } = await supabase
+      // Check if user already exists directly in profiles table
+      const { data: existingProfile, error: checkError } = await supabase
         .from('profiles')
         .select('whatsapp, first_name, whatsapp_last4')
-        .or(`whatsapp.eq.${userData.whatsapp},and(first_name.ilike.${userData.firstName},whatsapp_last4.eq.${userData.whatsappLast4})`)
-        .single();
+        .or(`whatsapp.eq.${userData.whatsapp},and(first_name.eq.${userData.firstName},whatsapp_last4.eq.${userData.whatsappLast4})`)
+        .maybeSingle();
+
+      if (checkError && checkError.code !== 'PGRST116') {
+        console.error('Error checking existing user:', checkError);
+        return false;
+      }
 
       if (existingProfile) {
-        return false;
+        return false; // User already exists
       }
 
-      // Use anonymous authentication and create profile
-      const { data: authData, error: authError } = await supabase.auth.signInAnonymously();
-
-      if (authError || !authData.user) {
-        console.error('Anonymous auth error:', authError);
-        return false;
-      }
-
-      // Insert profile data
+      // Insert profile directly without Supabase auth
       const { error: profileError } = await supabase
         .from('profiles')
         .insert({
-          user_id: authData.user.id,
           first_name: userData.firstName,
           last_name: userData.lastName,
           whatsapp: userData.whatsapp,
