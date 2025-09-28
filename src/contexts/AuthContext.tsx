@@ -153,43 +153,28 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         );
 
         if (registeredUser) {
-          // Create a temporary email for Supabase auth
-          const tempEmail = `${registeredUser.whatsapp}@example.com`;
-          const tempPassword = `${registeredUser.whatsapp}_${registeredUser.whatsappLast4}`;
+          // Use anonymous authentication and link to profile
+          const { data, error } = await supabase.auth.signInAnonymously();
           
-          // Try to sign in or sign up with Supabase
-          let { error } = await supabase.auth.signInWithPassword({
-            email: tempEmail,
-            password: tempPassword,
-          });
-
-          // If user doesn't exist in auth, create them
-          if (error?.message?.includes('Invalid login credentials')) {
-            const { error: signUpError } = await supabase.auth.signUp({
-              email: tempEmail,
-              password: tempPassword,
-              options: {
-                emailRedirectTo: `${window.location.origin}/`,
-                data: {
-                  first_name: registeredUser.firstName,
-                  last_name: registeredUser.lastName
-                }
-              }
-            });
-            
-            if (signUpError) {
-              console.error('Sign up error:', signUpError);
-              return false;
-            }
-            
-            // Try signing in again
-            ({ error } = await supabase.auth.signInWithPassword({
-              email: tempEmail,
-              password: tempPassword,
-            }));
+          if (error) {
+            console.error('Anonymous auth error:', error);
+            return false;
           }
 
-          return !error;
+          // Update the profile with the user's data
+          if (data.user) {
+            const { error: updateError } = await supabase
+              .from('profiles')
+              .update({ user_id: data.user.id })
+              .eq('id', registeredUser.id);
+
+            if (updateError) {
+              console.error('Profile update error:', updateError);
+              return false;
+            }
+          }
+
+          return true;
         }
       }
 
@@ -214,25 +199,11 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         return false;
       }
 
-      // Create temp email and password for Supabase auth
-      const tempEmail = `${userData.whatsapp}@example.com`;
-      const tempPassword = `${userData.whatsapp}_${userData.whatsappLast4}`;
-
-      // Sign up with Supabase auth
-      const { data: authData, error: authError } = await supabase.auth.signUp({
-        email: tempEmail,
-        password: tempPassword,
-        options: {
-          emailRedirectTo: `${window.location.origin}/`,
-          data: {
-            first_name: userData.firstName,
-            last_name: userData.lastName
-          }
-        }
-      });
+      // Use anonymous authentication and create profile
+      const { data: authData, error: authError } = await supabase.auth.signInAnonymously();
 
       if (authError || !authData.user) {
-        console.error('Auth signup error:', authError);
+        console.error('Anonymous auth error:', authError);
         return false;
       }
 
