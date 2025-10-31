@@ -1,27 +1,177 @@
-<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>CGPL Soluções - Sistema de Chamados Prediais</title>
-    <meta name="description" content="Sistema completo de gerenciamento de chamados de serviços prediais da CGPL Soluções. Gerencie suas solicitações de manutenção com eficiência." />
-    <meta name="author" content="CGPL Soluções" />
-    <meta name="keywords" content="CGPL, soluções prediais, chamados, manutenção, serviços, gestão predial" />
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CGPL Soluções - Sistema de Agendamento</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+        }
+        .priority-high { border-left: 4px solid #ef4444; }
+        .priority-medium { border-left: 4px solid #f59e0b; }
+        .priority-low { border-left: 4px solid #10b981; }
+    </style>
+</head>
+<body class="gradient-bg min-h-screen">
+    <!-- Header -->
+    <header class="bg-white shadow-lg">
+        <div class="container mx-auto px-4 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-3">
+                    <div class="w-12 h-12 bg-blue-500 rounded-lg flex items-center justify-center">
+                        <i class="fas fa-building text-white text-xl"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-2xl font-bold text-gray-800">CGPL Soluções</h1>
+                        <p class="text-gray-600 text-sm">Sistema de Agendamento</p>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <button onclick="showSection('agendamentos')" class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition">
+                        <i class="fas fa-calendar-alt mr-2"></i>Agendamentos
+                    </button>
+                    <button onclick="showSection('novo-agendamento')" class="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 transition">
+                        <i class="fas fa-plus mr-2"></i>Novo Agendamento
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
 
-    <meta property="og:title" content="CGPL Soluções - Sistema de Chamados Prediais" />
-    <meta property="og:description" content="Sistema completo de gerenciamento de chamados de serviços prediais. Hidráulica, elétrica, limpeza e muito mais." />
-    <meta property="og:type" content="website" />
-    <meta property="og:image" content="https://lovable.dev/opengraph-image-p98pqg.png" />
+    <!-- Main Content -->
+    <main class="container mx-auto px-4 py-8">
+        <!-- Seção de Agendamentos -->
+        <div id="agendamentos-section">
+            <div class="flex justify-between items-center mb-8">
+                <h2 class="text-3xl font-bold text-white">Agendamentos Ativos</h2>
+                <div class="bg-white/20 backdrop-blur-sm rounded-lg px-4 py-2">
+                    <span class="text-white font-semibold" id="agendamentos-count">3 agendamentos</span>
+                </div>
+            </div>
 
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:site" content="@cgpl_solucoes" />
-    <meta name="twitter:image" content="https://lovable.dev/opengraph-image-p98pqg.png" />
-    
-    <link rel="canonical" href="https://cgpl-solucoes.lovable.app" />
-  </head>
+            <!-- Cards de Agendamentos -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Agendamento 1 -->
+                <div class="glass-card rounded-xl p-6 priority-high">
+                    <div class="flex justify-between items-start mb-4">
+                        <div>
+                            <h3 class="font-bold text-lg text-gray-800">Manutenção Hidráulica</h3>
+                            <p class="text-gray-600 text-sm">Apartamento 102</p>
+                        </div>
+                        <span class="bg-red-100 text-red-800 px-2 py-1 rounded-full text-xs font-semibold">URGENTE</span>
+                    </div>
+                    <p class="text-gray-700 mb-4">Vazamento na pia do banheiro social</p>
+                    <div class="flex justify-between items-center text-sm text-gray-500">
+                        <span><i class="fas fa-user mr-1"></i>João Silva</span>
+                        <span><i class="fas fa-clock mr-1"></i>Hoje, 14:00</span>
+                    </div>
+                </div>
 
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
-  </body>
+                <!-- Agendamento 2 -->
+                <div class="glass-card rounded-xl p-6 priority-medium">
+                    <div class="flex justify-between items-start mb-4">
+                        <div>
+                            <h3 class="font-bold text-lg text-gray-800">Instalação Elétrica</h3>
+                            <p class="text-gray-600 text-sm">Sala de Estar</p>
+                        </div>
+                        <span class="bg-yellow-100 text-yellow-800 px-2 py-1 rounded-full text-xs font-semibold">MÉDIA</span>
+                    </div>
+                    <p class="text-gray-700 mb-4">Instalação de ponto de energia extra</p>
+                    <div class="flex justify-between items-center text-sm text-gray-500">
+                        <span><i class="fas fa-user mr-1"></i>Maria Santos</span>
+                        <span><i class="fas fa-clock mr-1"></i>Amanhã, 10:00</span>
+                    </div>
+                </div>
+
+                <!-- Agendamento 3 -->
+                <div class="glass-card rounded-xl p-6 priority-low">
+                    <div class="flex justify-between items-start mb-4">
+                        <div>
+                            <h3 class="font-bold text-lg text-gray-800">Pintura</h3>
+                            <p class="text-gray-600 text-sm">Quarto Principal</p>
+                        </div>
+                        <span class="bg-green-100 text-green-800 px-2 py-1 rounded-full text-xs font-semibold">BAIXA</span>
+                    </div>
+                    <p class="text-gray-700 mb-4">Retoque na pintura das paredes</p>
+                    <div class="flex justify-between items-center text-sm text-gray-500">
+                        <span><i class="fas fa-user mr-1"></i>Carlos Oliveira</span>
+                        <span><i class="fas fa-clock mr-1"></i>15/11, 09:00</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Seção Novo Agendamento -->
+        <div id="novo-agendamento-section" class="hidden">
+            <div class="glass-card rounded-xl p-8 max-w-2xl mx-auto">
+                <h2 class="text-3xl font-bold text-gray-800 mb-6 text-center">Novo Agendamento</h2>
+                
+                <form class="space-y-6">
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-gray-700 font-semibold mb-2">Serviço</label>
+                            <select class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                                <option>Manutenção Hidráulica</option>
+                                <option>Serviço Elétrico</option>
+                                <option>Pintura</option>
+                                <option>Limpeza</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-gray-700 font-semibold mb-2">Prioridade</label>
+                            <select class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                                <option>Baixa</option>
+                                <option>Média</option>
+                                <option>Alta</option>
+                                <option>Urgente</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-gray-700 font-semibold mb-2">Descrição</label>
+                        <textarea class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" rows="3" placeholder="Descreva o serviço necessário..."></textarea>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-gray-700 font-semibold mb-2">Data</label>
+                            <input type="date" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                        </div>
+                        <div>
+                            <label class="block text-gray-700 font-semibold mb-2">Hora</label>
+                            <input type="time" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                        </div>
+                    </div>
+
+                    <button type="button" onclick="agendarServico()" class="w-full bg-green-500 text-white py-4 rounded-lg font-semibold text-lg hover:bg-green-600 transition">
+                        <i class="fas fa-calendar-plus mr-2"></i>Agendar Serviço
+                    </button>
+                </form>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        function showSection(section) {
+            document.getElementById('agendamentos-section').classList.add('hidden');
+            document.getElementById('novo-agendamento-section').classList.add('hidden');
+            document.getElementById(section + '-section').classList.remove('hidden');
+        }
+
+        function agendarServico() {
+            alert('✅ Serviço agendado com sucesso!\n\nEm uma versão completa, este dado seria salvo no banco de dados.');
+        }
+
+        // Inicializar
+        showSection('agendamentos');
+    </script>
+</body>
 </html>
