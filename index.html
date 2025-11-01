@@ -17,6 +17,10 @@
         .priority-high { border-left: 4px solid #ef4444; }
         .priority-medium { border-left: 4px solid #f59e0b; }
         .priority-low { border-left: 4px solid #10b981; }
+        .status-pendente { background-color: #fef3c7; color: #d97706; }
+        .status-andamento { background-color: #dbeafe; color: #1d4ed8; }
+        .status-concluido { background-color: #d1fae5; color: #065f46; }
+        .status-cancelado { background-color: #fee2e2; color: #dc2626; }
     </style>
 </head>
 <body class="gradient-bg min-h-screen">
@@ -34,13 +38,13 @@
                     </div>
                 </div>
                 <div class="flex items-center space-x-4">
-                    <button onclick="showSection('agendamentos')" class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition">
+                    <button id="nav-agendamentos" onclick="showSection('agendamentos')" class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition hidden">
                         <i class="fas fa-calendar-alt mr-2"></i>Agendamentos
                     </button>
-                    <button onclick="showSection('novo-agendamento')" class="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 transition">
+                    <button id="nav-novo-agendamento" onclick="showSection('novo-agendamento')" class="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 transition hidden">
                         <i class="fas fa-plus mr-2"></i>Novo Agendamento
                     </button>
-                    <button onclick="showSection('login')" class="bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600 transition">
+                    <button id="nav-login" onclick="showSection('login')" class="bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600 transition">
                         <i class="fas fa-sign-in-alt mr-2"></i>Login
                     </button>
                 </div>
@@ -50,120 +54,196 @@
 
     <!-- Main Content -->
     <main class="container mx-auto px-4 py-8">
-        <!-- Seção Login -->
-        <div id="login-section">
+        <!-- Seção Cadastro -->
+        <div id="cadastro-section">
             <div class="max-w-md mx-auto">
                 <div class="glass-card rounded-xl p-8">
-                    <h2 class="text-3xl font-bold text-gray-800 mb-6 text-center">Login</h2>
+                    <h2 class="text-3xl font-bold text-gray-800 mb-6 text-center">Criar Conta</h2>
                     
                     <div class="flex border-b mb-6">
-                        <button class="flex-1 py-2 font-medium border-b-2 border-blue-600 text-blue-600" onclick="showLoginTab('client')">
+                        <button class="flex-1 py-2 font-medium border-b-2 border-blue-600 text-blue-600" onclick="showCadastroTab('client', event)">
                             Cliente
                         </button>
-                        <button class="flex-1 py-2 font-medium text-gray-500" onclick="showLoginTab('planner')">
-                            Planejador
+                        <button class="flex-1 py-2 font-medium text-gray-500" onclick="showCadastroTab('admin', event)">
+                            Administrador
                         </button>
                     </div>
 
-                    <!-- Login Cliente -->
-                    <div id="client-login" class="space-y-4">
+                    <!-- Cadastro Cliente -->
+                    <div id="client-cadastro" class="space-y-4">
                         <div>
-                            <label class="block text-gray-700 font-semibold mb-2">Primeiro Nome</label>
-                            <input type="text" id="clientName" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" placeholder="Seu primeiro nome">
+                            <label class="block text-gray-700 font-semibold mb-2">Nome Completo</label>
+                            <input type="text" id="clientFullName" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" placeholder="Seu nome completo">
                         </div>
                         <div>
-                            <label class="block text-gray-700 font-semibold mb-2">Últimos 4 dígitos do WhatsApp</label>
-                            <input type="text" id="whatsappLast4" maxlength="4" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" placeholder="0000">
+                            <label class="block text-gray-700 font-semibold mb-2">WhatsApp Completo</label>
+                            <input type="tel" id="clientWhatsApp" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" placeholder="(11) 99999-9999">
                         </div>
-                        <button onclick="loginClient()" class="w-full bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 transition">
-                            <i class="fas fa-sign-in-alt mr-2"></i>Entrar como Cliente
-                        </button>
-                    </div>
-
-                    <!-- Login Planejador -->
-                    <div id="planner-login" class="space-y-4 hidden">
                         <div>
-                            <label class="block text-gray-700 font-semibold mb-2">Nome</label>
-                            <input type="text" id="plannerName" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" placeholder="Seu nome">
+                            <label class="block text-gray-700 font-semibold mb-2">Apartamento/Unidade</label>
+                            <input type="text" id="clientApartment" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" placeholder="Ex: 102, Bloco A">
                         </div>
                         <div>
                             <label class="block text-gray-700 font-semibold mb-2">Senha</label>
-                            <input type="password" id="plannerPassword" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" placeholder="Senha do planejador">
+                            <input type="password" id="clientPassword" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" placeholder="Mínimo 6 caracteres">
                         </div>
-                        <button onclick="loginPlanner()" class="w-full bg-green-600 text-white py-3 rounded-lg font-semibold hover:bg-green-700 transition">
-                            <i class="fas fa-user-cog mr-2"></i>Entrar como Planejador
+                        <div>
+                            <label class="block text-gray-700 font-semibold mb-2">Confirmar Senha</label>
+                            <input type="password" id="clientConfirmPassword" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" placeholder="Digite a senha novamente">
+                        </div>
+                        <button onclick="cadastrarCliente()" class="w-full bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 transition">
+                            <i class="fas fa-user-plus mr-2"></i>Criar Conta de Cliente
                         </button>
+                        <div class="text-center mt-4">
+                            <span class="text-gray-600">Já tem conta? </span>
+                            <button onclick="showSection('login')" class="text-blue-600 font-semibold hover:underline">Fazer Login</button>
+                        </div>
                     </div>
 
-                    <div class="mt-6 p-4 bg-yellow-50 border border-yellow-200 rounded-md">
-                        <p class="text-sm text-yellow-800 text-center">
-                            <strong>Demo:</strong> Use qualquer nome + últimos 4 dígitos do WhatsApp
-                            <br>
-                            <strong>Planejador:</strong> senha: <code>123456</code>
+                    <!-- Cadastro Administrador -->
+                    <div id="admin-cadastro" class="space-y-4 hidden">
+                        <div>
+                            <label class="block text-gray-700 font-semibold mb-2">Nome Completo</label>
+                            <input type="text" id="adminFullName" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" placeholder="Seu nome completo">
+                        </div>
+                        <div>
+                            <label class="block text-gray-700 font-semibold mb-2">E-mail</label>
+                            <input type="email" id="adminEmail" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" placeholder="seu@email.com">
+                        </div>
+                        <div>
+                            <label class="block text-gray-700 font-semibold mb-2">Senha</label>
+                            <input type="password" id="adminPasswordCadastro" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" placeholder="Mínimo 6 caracteres">
+                        </div>
+                        <div>
+                            <label class="block text-gray-700 font-semibold mb-2">Confirmar Senha</label>
+                            <input type="password" id="adminConfirmPassword" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" placeholder="Digite a senha novamente">
+                        </div>
+                        <button onclick="cadastrarAdmin()" class="w-full bg-purple-600 text-white py-3 rounded-lg font-semibold hover:bg-purple-700 transition">
+                            <i class="fas fa-user-shield mr-2"></i>Criar Conta de Administrador
+                        </button>
+                        <div class="text-center mt-4">
+                            <span class="text-gray-600">Já tem conta? </span>
+                            <button onclick="showSection('login')" class="text-purple-600 font-semibold hover:underline">Fazer Login</button>
+                        </div>
+                    </div>
+
+                    <div class="mt-6 p-4 bg-green-50 border border-green-200 rounded-md">
+                        <p class="text-sm text-green-800 text-center">
+                            <strong>Quer testar rapidamente?</strong><br>
+                            Use as contas demo já criadas:<br>
+                            Cliente: WhatsApp (11) 99999-0000 | Senha: 123456<br>
+                            Administrador: E-mail admin@cgpl.com | Senha: 123456<br>
+                            <button onclick="showSection('login')" class="text-green-600 font-semibold hover:underline mt-2">
+                                Ir para Login →
+                            </button>
                         </p>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Seção de Agendamentos (após login) -->
+        <!-- Seção Login -->
+        <div id="login-section" class="hidden">
+            <div class="max-w-md mx-auto">
+                <div class="glass-card rounded-xl p-8">
+                    <h2 class="text-3xl font-bold text-gray-800 mb-6 text-center">Login</h2>
+                    
+                    <div class="flex border-b mb-6">
+                        <button class="flex-1 py-2 font-medium border-b-2 border-blue-600 text-blue-600" onclick="showLoginTab('client', event)">
+                            Cliente
+                        </button>
+                        <button class="flex-1 py-2 font-medium text-gray-500" onclick="showLoginTab('admin', event)">
+                            Administrador
+                        </button>
+                    </div>
+
+                    <!-- Login Cliente -->
+                    <div id="client-login" class="space-y-4">
+                        <div>
+                            <label class="block text-gray-700 font-semibold mb-2">WhatsApp</label>
+                            <input type="tel" id="clientWhatsAppLogin" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" placeholder="(11) 99999-0000" value="(11) 99999-0000">
+                        </div>
+                        <div>
+                            <label class="block text-gray-700 font-semibold mb-2">Senha</label>
+                            <input type="password" id="clientPasswordLogin" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" placeholder="Sua senha" value="123456">
+                        </div>
+                        <button onclick="loginClient()" class="w-full bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 transition">
+                            <i class="fas fa-sign-in-alt mr-2"></i>Entrar como Cliente
+                        </button>
+                        <div class="text-center mt-4">
+                            <span class="text-gray-600">Não tem conta? </span>
+                            <button onclick="showSection('cadastro')" class="text-blue-600 font-semibold hover:underline">Criar Conta</button>
+                        </div>
+                    </div>
+
+                    <!-- Login Administrador -->
+                    <div id="admin-login" class="space-y-4 hidden">
+                        <div>
+                            <label class="block text-gray-700 font-semibold mb-2">E-mail</label>
+                            <input type="email" id="adminEmailLogin" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" placeholder="seu@email.com" value="admin@cgpl.com">
+                        </div>
+                        <div>
+                            <label class="block text-gray-700 font-semibold mb-2">Senha</label>
+                            <input type="password" id="adminPasswordLogin" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" placeholder="Sua senha" value="123456">
+                        </div>
+                        <button onclick="loginAdmin()" class="w-full bg-purple-600 text-white py-3 rounded-lg font-semibold hover:bg-purple-700 transition">
+                            <i class="fas fa-user-shield mr-2"></i>Entrar como Administrador
+                        </button>
+                        <div class="text-center mt-4">
+                            <span class="text-gray-600">Não tem conta? </span>
+                            <button onclick="showSection('cadastro')" class="text-purple-600 font-semibold hover:underline">Criar Conta</button>
+                        </div>
+                    </div>
+
+                    <div class="mt-6 p-4 bg-green-50 border border-green-200 rounded-md">
+                        <p class="text-sm text-green-800 text-center">
+                            <strong>Credenciais Pré-preenchidas!</strong><br>
+                            Cliente: WhatsApp (11) 99999-0000 | Senha: 123456<br>
+                            Administrador: E-mail admin@cgpl.com | Senha: 123456
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Seção de Agendamentos -->
         <div id="agendamentos-section" class="hidden">
             <div class="flex justify-between items-center mb-8">
-                <h2 class="text-3xl font-bold text-white">Agendamentos Ativos</h2>
-                <div class="bg-white/20 backdrop-blur-sm rounded-lg px-4 py-2">
-                    <span class="text-white font-semibold" id="agendamentos-count">3 agendamentos</span>
+                <h2 class="text-3xl font-bold text-white">
+                    <span id="titulo-agendamentos">Meus Agendamentos</span>
+                </h2>
+                <div class="flex space-x-4">
+                    <div class="bg-white/20 backdrop-blur-sm rounded-lg px-4 py-2">
+                        <span class="text-white font-semibold" id="agendamentos-count">0 agendamentos</span>
+                    </div>
+                    <button onclick="showSection('novo-agendamento')" class="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 transition">
+                        <i class="fas fa-plus mr-2"></i>Novo Agendamento
+                    </button>
                 </div>
             </div>
 
+            <!-- Filtros -->
+            <div class="mb-6 flex space-x-4">
+                <button onclick="filtrarAgendamentos('todos')" class="bg-white text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-100 transition">
+                    Todos
+                </button>
+                <button onclick="filtrarAgendamentos('pendente')" class="bg-yellow-500 text-white px-4 py-2 rounded-lg hover:bg-yellow-600 transition">
+                    Pendentes
+                </button>
+                <button onclick="filtrarAgendamentos('andamento')" class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition">
+                    Em Andamento
+                </button>
+                <button onclick="filtrarAgendamentos('concluido')" class="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 transition">
+                    Concluídos
+                </button>
+                <button onclick="filtrarAgendamentos('cancelado')" class="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition">
+                    Cancelados
+                </button>
+            </div>
+
             <!-- Cards de Agendamentos -->
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                <!-- Agendamento 1 -->
-                <div class="glass-card rounded-xl p-6 priority-high">
-                    <div class="flex justify-between items-start mb-4">
-                        <div>
-                            <h3 class="font-bold text-lg text-gray-800">Manutenção Hidráulica</h3>
-                            <p class="text-gray-600 text-sm">Apartamento 102</p>
-                        </div>
-                        <span class="bg-red-100 text-red-800 px-2 py-1 rounded-full text-xs font-semibold">URGENTE</span>
-                    </div>
-                    <p class="text-gray-700 mb-4">Vazamento na pia do banheiro social</p>
-                    <div class="flex justify-between items-center text-sm text-gray-500">
-                        <span><i class="fas fa-user mr-1"></i>João Silva</span>
-                        <span><i class="fas fa-clock mr-1"></i>Hoje, 14:00</span>
-                    </div>
-                </div>
-
-                <!-- Agendamento 2 -->
-                <div class="glass-card rounded-xl p-6 priority-medium">
-                    <div class="flex justify-between items-start mb-4">
-                        <div>
-                            <h3 class="font-bold text-lg text-gray-800">Instalação Elétrica</h3>
-                            <p class="text-gray-600 text-sm">Sala de Estar</p>
-                        </div>
-                        <span class="bg-yellow-100 text-yellow-800 px-2 py-1 rounded-full text-xs font-semibold">MÉDIA</span>
-                    </div>
-                    <p class="text-gray-700 mb-4">Instalação de ponto de energia extra</p>
-                    <div class="flex justify-between items-center text-sm text-gray-500">
-                        <span><i class="fas fa-user mr-1"></i>Maria Santos</span>
-                        <span><i class="fas fa-clock mr-1"></i>Amanhã, 10:00</span>
-                    </div>
-                </div>
-
-                <!-- Agendamento 3 -->
-                <div class="glass-card rounded-xl p-6 priority-low">
-                    <div class="flex justify-between items-start mb-4">
-                        <div>
-                            <h3 class="font-bold text-lg text-gray-800">Pintura</h3>
-                            <p class="text-gray-600 text-sm">Quarto Principal</p>
-                        </div>
-                        <span class="bg-green-100 text-green-800 px-2 py-1 rounded-full text-xs font-semibold">BAIXA</span>
-                    </div>
-                    <p class="text-gray-700 mb-4">Retoque na pintura das paredes</p>
-                    <div class="flex justify-between items-center text-sm text-gray-500">
-                        <span><i class="fas fa-user mr-1"></i>Carlos Oliveira</span>
-                        <span><i class="fas fa-clock mr-1"></i>15/11, 09:00</span>
-                    </div>
-                </div>
+            <div id="agendamentos-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Os agendamentos serão carregados aqui dinamicamente -->
             </div>
         </div>
 
@@ -172,41 +252,50 @@
             <div class="glass-card rounded-xl p-8 max-w-2xl mx-auto">
                 <h2 class="text-3xl font-bold text-gray-800 mb-6 text-center">Novo Agendamento</h2>
                 
-                <form class="space-y-6">
+                <form id="form-agendamento" class="space-y-6">
                     <div class="grid grid-cols-2 gap-4">
                         <div>
                             <label class="block text-gray-700 font-semibold mb-2">Serviço</label>
-                            <select class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                            <select id="servico" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                                <option value="">Selecione um serviço</option>
                                 <option>Manutenção Hidráulica</option>
                                 <option>Serviço Elétrico</option>
                                 <option>Pintura</option>
                                 <option>Limpeza</option>
+                                <option>Instalação</option>
+                                <option>Reparo Geral</option>
                             </select>
                         </div>
                         <div>
                             <label class="block text-gray-700 font-semibold mb-2">Prioridade</label>
-                            <select class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
-                                <option>Baixa</option>
-                                <option>Média</option>
-                                <option>Alta</option>
-                                <option>Urgente</option>
+                            <select id="prioridade" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                                <option value="">Selecione a prioridade</option>
+                                <option value="Baixa">Baixa</option>
+                                <option value="Média">Média</option>
+                                <option value="Alta">Alta</option>
+                                <option value="Urgente">Urgente</option>
                             </select>
                         </div>
                     </div>
 
                     <div>
-                        <label class="block text-gray-700 font-semibold mb-2">Descrição</label>
-                        <textarea class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" rows="3" placeholder="Descreva o serviço necessário..."></textarea>
+                        <label class="block text-gray-700 font-semibold mb-2">Local do Serviço</label>
+                        <input type="text" id="local" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" placeholder="Ex: Banheiro social, Cozinha, etc.">
+                    </div>
+
+                    <div>
+                        <label class="block text-gray-700 font-semibold mb-2">Descrição Detalhada</label>
+                        <textarea id="descricao" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" rows="4" placeholder="Descreva detalhadamente o serviço necessário..."></textarea>
                     </div>
 
                     <div class="grid grid-cols-2 gap-4">
                         <div>
                             <label class="block text-gray-700 font-semibold mb-2">Data</label>
-                            <input type="date" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                            <input type="date" id="data" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
                         </div>
                         <div>
                             <label class="block text-gray-700 font-semibold mb-2">Hora</label>
-                            <input type="time" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                            <input type="time" id="hora" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
                         </div>
                     </div>
 
@@ -216,72 +305,629 @@
                 </form>
             </div>
         </div>
+
+        <!-- Modal de Detalhes do Agendamento -->
+        <div id="modal-detalhes" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50">
+            <div class="glass-card rounded-xl p-8 max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto">
+                <div class="flex justify-between items-center mb-6">
+                    <h3 class="text-2xl font-bold text-gray-800">Detalhes do Agendamento</h3>
+                    <button onclick="fecharModal()" class="text-gray-500 hover:text-gray-700">
+                        <i class="fas fa-times text-2xl"></i>
+                    </button>
+                </div>
+                <div id="modal-content" class="space-y-4">
+                    <!-- Conteúdo será preenchido dinamicamente -->
+                </div>
+                <div id="modal-actions" class="flex space-x-4 mt-6 pt-6 border-t border-gray-200">
+                    <!-- Ações serão preenchidas dinamicamente -->
+                </div>
+            </div>
+        </div>
     </main>
 
     <script>
-        let currentUser = null;
+        // Banco de dados simulado - AGORA GLOBAL
+        window.usuariosClientes = [];
+        window.usuariosAdmins = [];
+        window.agendamentos = [];
+        window.currentUser = null;
+        window.filtroAtual = 'todos';
+
+        // Usuários demo pré-cadastrados - CORRIGIDO
+        function inicializarDemo() {
+            console.log("Inicializando demo...");
+            
+            // Limpar arrays primeiro
+            window.usuariosClientes = [];
+            window.usuariosAdmins = [];
+            window.agendamentos = [];
+
+            // Cliente demo
+            window.usuariosClientes.push({
+                nome: "João Silva",
+                whatsapp: "(11) 99999-0000",
+                apartamento: "102",
+                senha: "123456"
+            });
+            
+            // Administrador demo
+            window.usuariosAdmins.push({
+                nome: "Administrador CGPL",
+                email: "admin@cgpl.com",
+                senha: "123456"
+            });
+
+            // Agendamentos demo
+            window.agendamentos.push({
+                id: 1,
+                cliente: "João Silva",
+                clienteWhatsapp: "(11) 99999-0000",
+                servico: "Manutenção Hidráulica",
+                prioridade: "Urgente",
+                local: "Banheiro social - Apartamento 102",
+                descricao: "Vazamento persistente na pia do banheiro social. Água escorrendo pelo gabinete.",
+                data: new Date().toISOString().split('T')[0],
+                hora: "14:00",
+                status: "pendente",
+                dataCriacao: new Date()
+            });
+
+            window.agendamentos.push({
+                id: 2,
+                cliente: "João Silva", 
+                clienteWhatsapp: "(11) 99999-0000",
+                servico: "Instalação Elétrica",
+                prioridade: "Média",
+                local: "Sala de Estar - Apartamento 102",
+                descricao: "Instalação de ponto de energia extra para home office.",
+                data: new Date(Date.now() + 86400000).toISOString().split('T')[0],
+                hora: "10:00",
+                status: "andamento",
+                dataCriacao: new Date(Date.now() - 86400000)
+            });
+
+            window.agendamentos.push({
+                id: 3,
+                cliente: "João Silva",
+                clienteWhatsapp: "(11) 99999-0000",
+                servico: "Pintura",
+                prioridade: "Baixa", 
+                local: "Quarto Principal - Apartamento 102",
+                descricao: "Retoque na pintura das paredes com a mesma cor atual.",
+                data: "2024-11-15",
+                hora: "09:00",
+                status: "concluido",
+                dataCriacao: new Date(Date.now() - 172800000),
+                dataConclusao: new Date(Date.now() - 86400000)
+            });
+
+            console.log("Demo inicializado:", {
+                clientes: window.usuariosClientes,
+                admins: window.usuariosAdmins,
+                agendamentos: window.agendamentos
+            });
+        }
+
+        function updateNavigation() {
+            const isLoggedIn = window.currentUser !== null;
+            const agendamentosBtn = document.getElementById('nav-agendamentos');
+            const novoAgendamentoBtn = document.getElementById('nav-novo-agendamento');
+            const loginBtn = document.getElementById('nav-login');
+            
+            if (isLoggedIn) {
+                agendamentosBtn.classList.remove('hidden');
+                novoAgendamentoBtn.classList.remove('hidden');
+                loginBtn.innerHTML = '<i class="fas fa-sign-out-alt mr-2"></i>Sair';
+                loginBtn.classList.remove('bg-gray-500');
+                loginBtn.classList.add('bg-red-500', 'hover:bg-red-600');
+            } else {
+                agendamentosBtn.classList.add('hidden');
+                novoAgendamentoBtn.classList.add('hidden');
+                loginBtn.innerHTML = '<i class="fas fa-sign-in-alt mr-2"></i>Login';
+                loginBtn.classList.remove('bg-red-500', 'hover:bg-red-600');
+                loginBtn.classList.add('bg-gray-500', 'hover:bg-gray-600');
+            }
+        }
+
+        function logout() {
+            window.currentUser = null;
+            alert('Logout realizado com sucesso!');
+            showSection('login');
+            updateNavigation();
+        }
 
         function showSection(section) {
+            document.getElementById('cadastro-section').classList.add('hidden');
             document.getElementById('login-section').classList.add('hidden');
             document.getElementById('agendamentos-section').classList.add('hidden');
             document.getElementById('novo-agendamento-section').classList.add('hidden');
+            
+            if ((section === 'agendamentos' || section === 'novo-agendamento') && !window.currentUser) {
+                alert('⚠️ Por favor, faça login primeiro!');
+                showSection('login');
+                return;
+            }
+            
             document.getElementById(section + '-section').classList.remove('hidden');
+            
+            if (section === 'agendamentos') {
+                carregarAgendamentos();
+            }
+            
+            updateNavigation();
         }
 
-        function showLoginTab(tab) {
+        function showCadastroTab(tab, event) {
+            document.getElementById('client-cadastro').classList.add('hidden');
+            document.getElementById('admin-cadastro').classList.add('hidden');
+            document.getElementById(tab + '-cadastro').classList.remove('hidden');
+            
+            document.querySelectorAll('button[onclick^="showCadastroTab"]').forEach(btn => {
+                btn.classList.remove('border-b-2', 'border-blue-600', 'text-blue-600');
+                btn.classList.add('text-gray-500');
+            });
+            
+            if (event) {
+                event.target.classList.add('border-b-2', 'border-blue-600', 'text-blue-600');
+                event.target.classList.remove('text-gray-500');
+            }
+        }
+
+        function showLoginTab(tab, event) {
             document.getElementById('client-login').classList.add('hidden');
-            document.getElementById('planner-login').classList.add('hidden');
+            document.getElementById('admin-login').classList.add('hidden');
             document.getElementById(tab + '-login').classList.remove('hidden');
             
-            // Update tab buttons
             document.querySelectorAll('button[onclick^="showLoginTab"]').forEach(btn => {
                 btn.classList.remove('border-b-2', 'border-blue-600', 'text-blue-600');
                 btn.classList.add('text-gray-500');
             });
-            event.target.classList.add('border-b-2', 'border-blue-600', 'text-blue-600');
-            event.target.classList.remove('text-gray-500');
+            
+            if (event) {
+                event.target.classList.add('border-b-2', 'border-blue-600', 'text-blue-600');
+                event.target.classList.remove('text-gray-500');
+            }
+        }
+
+        function cadastrarCliente() {
+            const nome = document.getElementById('clientFullName').value.trim();
+            const whatsapp = document.getElementById('clientWhatsApp').value.trim();
+            const apartamento = document.getElementById('clientApartment').value.trim();
+            const senha = document.getElementById('clientPassword').value;
+            const confirmarSenha = document.getElementById('clientConfirmPassword').value;
+            
+            if (!nome || !whatsapp || !apartamento || !senha || !confirmarSenha) {
+                alert('❌ Por favor, preencha todos os campos!');
+                return;
+            }
+
+            if (senha.length < 6) {
+                alert('❌ A senha deve ter pelo menos 6 caracteres!');
+                return;
+            }
+
+            if (senha !== confirmarSenha) {
+                alert('❌ As senhas não coincidem!');
+                return;
+            }
+
+            const clienteExistente = window.usuariosClientes.find(cliente => 
+                cliente.whatsapp === whatsapp
+            );
+
+            if (clienteExistente) {
+                alert('❌ Já existe um cliente cadastrado com este WhatsApp!');
+                return;
+            }
+
+            window.usuariosClientes.push({
+                nome: nome,
+                whatsapp: whatsapp,
+                apartamento: apartamento,
+                senha: senha
+            });
+
+            alert('✅ Cliente cadastrado com sucesso!\nAgora faça login para acessar o sistema.');
+            showSection('login');
+            showLoginTab('client');
+        }
+
+        function cadastrarAdmin() {
+            const nome = document.getElementById('adminFullName').value.trim();
+            const email = document.getElementById('adminEmail').value.trim();
+            const senha = document.getElementById('adminPasswordCadastro').value;
+            const confirmarSenha = document.getElementById('adminConfirmPassword').value;
+            
+            if (!nome || !email || !senha || !confirmarSenha) {
+                alert('❌ Por favor, preencha todos os campos!');
+                return;
+            }
+
+            if (senha.length < 6) {
+                alert('❌ A senha deve ter pelo menos 6 caracteres!');
+                return;
+            }
+
+            if (senha !== confirmarSenha) {
+                alert('❌ As senhas não coincidem!');
+                return;
+            }
+
+            const adminExistente = window.usuariosAdmins.find(admin => 
+                admin.email === email
+            );
+
+            if (adminExistente) {
+                alert('❌ Já existe um administrador cadastrado com este e-mail!');
+                return;
+            }
+
+            window.usuariosAdmins.push({
+                nome: nome,
+                email: email,
+                senha: senha
+            });
+
+            alert('✅ Administrador cadastrado com sucesso!\nAgora faça login para acessar o sistema.');
+            showSection('login');
+            showLoginTab('admin');
         }
 
         function loginClient() {
-            const name = document.getElementById('clientName').value;
-            const whatsapp = document.getElementById('whatsappLast4').value;
+            const whatsapp = document.getElementById('clientWhatsAppLogin').value.trim();
+            const senha = document.getElementById('clientPasswordLogin').value;
             
-            if (!name || !whatsapp) {
-                alert('Por favor, preencha todos os campos!');
+            console.log("Tentando login cliente:", { whatsapp, senha });
+            console.log("Clientes disponíveis:", window.usuariosClientes);
+            
+            if (!whatsapp || !senha) {
+                alert('❌ Por favor, preencha todos os campos!');
                 return;
             }
 
-            currentUser = { name: name, role: 'client' };
-            alert('✅ Login realizado com sucesso!\nBem-vindo, ' + name + '!');
+            const cliente = window.usuariosClientes.find(user => 
+                user.whatsapp === whatsapp && user.senha === senha
+            );
+
+            if (!cliente) {
+                alert('❌ WhatsApp ou senha incorretos!\n\nUse:\nWhatsApp: (11) 99999-0000\nSenha: 123456');
+                return;
+            }
+
+            window.currentUser = { 
+                nome: cliente.nome, 
+                role: 'client', 
+                whatsapp: cliente.whatsapp,
+                apartamento: cliente.apartamento
+            };
+            
+            alert('✅ Login realizado com sucesso!\nBem-vindo, ' + cliente.nome + '!');
             showSection('agendamentos');
         }
 
-        function loginPlanner() {
-            const name = document.getElementById('plannerName').value;
-            const password = document.getElementById('plannerPassword').value;
+        function loginAdmin() {
+            const email = document.getElementById('adminEmailLogin').value.trim();
+            const senha = document.getElementById('adminPasswordLogin').value;
             
-            if (!name || !password) {
-                alert('Por favor, preencha todos os campos!');
+            console.log("Tentando login admin:", { email, senha });
+            console.log("Admins disponíveis:", window.usuariosAdmins);
+            
+            if (!email || !senha) {
+                alert('❌ Por favor, preencha todos os campos!');
                 return;
             }
 
-            if (password !== '123456') {
-                alert('❌ Senha incorreta! Use: 123456');
+            const admin = window.usuariosAdmins.find(user => 
+                user.email === email && user.senha === senha
+            );
+
+            if (!admin) {
+                alert('❌ E-mail ou senha incorretos!\n\nUse:\nE-mail: admin@cgpl.com\nSenha: 123456');
                 return;
             }
 
-            currentUser = { name: name, role: 'planner' };
-            alert('✅ Login como Planejador realizado!\nBem-vindo, ' + name + '!');
+            window.currentUser = { 
+                nome: admin.nome, 
+                role: 'admin', 
+                email: admin.email 
+            };
+            
+            alert('✅ Login como Administrador realizado!\nBem-vindo, ' + admin.nome + '!');
             showSection('agendamentos');
         }
 
         function agendarServico() {
-            alert('✅ Serviço agendado com sucesso!\n\nEm uma versão completa, este dado seria salvo no banco de dados.');
+            const servico = document.getElementById('servico').value;
+            const prioridade = document.getElementById('prioridade').value;
+            const local = document.getElementById('local').value.trim();
+            const descricao = document.getElementById('descricao').value.trim();
+            const data = document.getElementById('data').value;
+            const hora = document.getElementById('hora').value;
+            
+            if (!servico || !prioridade || !local || !descricao || !data || !hora) {
+                alert('❌ Por favor, preencha todos os campos!');
+                return;
+            }
+            
+            if (descricao.length < 10) {
+                alert('❌ A descrição deve ter pelo menos 10 caracteres!');
+                return;
+            }
+            
+            const dataAgendamento = new Date(data + 'T' + hora);
+            const hoje = new Date();
+            
+            if (dataAgendamento < hoje) {
+                alert('❌ Não é possível agendar para datas/horas passadas!');
+                return;
+            }
+            
+            const novoAgendamento = {
+                id: window.agendamentos.length + 1,
+                cliente: window.currentUser.nome,
+                clienteWhatsapp: window.currentUser.whatsapp,
+                servico: servico,
+                prioridade: prioridade,
+                local: local,
+                descricao: descricao,
+                data: data,
+                hora: hora,
+                status: "pendente",
+                dataCriacao: new Date()
+            };
+            
+            window.agendamentos.push(novoAgendamento);
+            
+            alert('✅ Serviço agendado com sucesso!');
+            document.getElementById('form-agendamento').reset();
+            showSection('agendamentos');
         }
 
-        // Inicializar
-        showSection('login');
-        showLoginTab('client');
+        function carregarAgendamentos() {
+            const container = document.getElementById('agendamentos-container');
+            const titulo = document.getElementById('titulo-agendamentos');
+            
+            // Atualizar título baseado no tipo de usuário
+            if (window.currentUser.role === 'admin') {
+                titulo.textContent = 'Todos os Agendamentos';
+            } else {
+                titulo.textContent = 'Meus Agendamentos';
+            }
+
+            let agendamentosFiltrados = window.agendamentos;
+            
+            // Se for cliente, filtrar apenas seus agendamentos
+            if (window.currentUser.role === 'client') {
+                agendamentosFiltrados = window.agendamentos.filter(ag => 
+                    ag.clienteWhatsapp === window.currentUser.whatsapp
+                );
+            }
+
+            if (window.filtroAtual !== 'todos') {
+                agendamentosFiltrados = agendamentosFiltrados.filter(ag => 
+                    ag.status === window.filtroAtual
+                );
+            }
+
+            document.getElementById('agendamentos-count').textContent = 
+                `${agendamentosFiltrados.length} agendamento(s)`;
+
+            if (agendamentosFiltrados.length === 0) {
+                container.innerHTML = `
+                    <div class="col-span-3 text-center py-12">
+                        <i class="fas fa-calendar-times text-4xl text-gray-400 mb-4"></i>
+                        <p class="text-gray-600 text-lg">Nenhum agendamento encontrado</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = agendamentosFiltrados.map(agendamento => `
+                <div class="glass-card rounded-xl p-6 priority-${agendamento.prioridade.toLowerCase()} cursor-pointer hover:shadow-lg transition" onclick="verDetalhes(${agendamento.id})">
+                    <div class="flex justify-between items-start mb-4">
+                        <div>
+                            <h3 class="font-bold text-lg text-gray-800">${agendamento.servico}</h3>
+                            <p class="text-gray-600 text-sm">${agendamento.local}</p>
+                        </div>
+                        <span class="px-2 py-1 rounded-full text-xs font-semibold status-${agendamento.status}">
+                            ${getStatusText(agendamento.status)}
+                        </span>
+                    </div>
+                    <p class="text-gray-700 mb-4 line-clamp-2">${agendamento.descricao}</p>
+                    <div class="flex justify-between items-center text-sm text-gray-500">
+                        <span><i class="fas fa-user mr-1"></i>${agendamento.cliente}</span>
+                        <span><i class="fas fa-clock mr-1"></i>${formatarData(agendamento.data)} ${agendamento.hora}</span>
+                    </div>
+                    <div class="mt-3 flex justify-between items-center">
+                        <span class="text-xs font-semibold px-2 py-1 rounded ${
+                            agendamento.prioridade === 'Urgente' ? 'bg-red-100 text-red-800' :
+                            agendamento.prioridade === 'Alta' ? 'bg-orange-100 text-orange-800' :
+                            agendamento.prioridade === 'Média' ? 'bg-yellow-100 text-yellow-800' :
+                            'bg-green-100 text-green-800'
+                        }">
+                            ${agendamento.prioridade}
+                        </span>
+                        <span class="text-xs text-gray-500">
+                            ${formatarDataRelativa(agendamento.dataCriacao)}
+                        </span>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function filtrarAgendamentos(status) {
+            window.filtroAtual = status;
+            carregarAgendamentos();
+        }
+
+        function verDetalhes(id) {
+            const agendamento = window.agendamentos.find(ag => ag.id === id);
+            if (!agendamento) return;
+
+            const modalContent = document.getElementById('modal-content');
+            const modalActions = document.getElementById('modal-actions');
+
+            modalContent.innerHTML = `
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="font-semibold text-gray-700">Serviço:</label>
+                        <p class="text-gray-900">${agendamento.servico}</p>
+                    </div>
+                    <div>
+                        <label class="font-semibold text-gray-700">Prioridade:</label>
+                        <span class="px-2 py-1 rounded text-sm font-semibold ${
+                            agendamento.prioridade === 'Urgente' ? 'bg-red-100 text-red-800' :
+                            agendamento.prioridade === 'Alta' ? 'bg-orange-100 text-orange-800' :
+                            agendamento.prioridade === 'Média' ? 'bg-yellow-100 text-yellow-800' :
+                            'bg-green-100 text-green-800'
+                        }">
+                            ${agendamento.prioridade}
+                        </span>
+                    </div>
+                    <div>
+                        <label class="font-semibold text-gray-700">Status:</label>
+                        <span class="px-2 py-1 rounded text-sm font-semibold status-${agendamento.status}">
+                            ${getStatusText(agendamento.status)}
+                        </span>
+                    </div>
+                    <div>
+                        <label class="font-semibold text-gray-700">Data/Hora:</label>
+                        <p class="text-gray-900">${formatarData(agendamento.data)} ${agendamento.hora}</p>
+                    </div>
+                    <div class="col-span-2">
+                        <label class="font-semibold text-gray-700">Local:</label>
+                        <p class="text-gray-900">${agendamento.local}</p>
+                    </div>
+                    <div class="col-span-2">
+                        <label class="font-semibold text-gray-700">Descrição:</label>
+                        <p class="text-gray-900 whitespace-pre-wrap">${agendamento.descricao}</p>
+                    </div>
+                    <div class="col-span-2">
+                        <label class="font-semibold text-gray-700">Cliente:</label>
+                        <p class="text-gray-900">${agendamento.cliente} (${agendamento.clienteWhatsapp})</p>
+                    </div>
+                    <div class="col-span-2">
+                        <label class="font-semibold text-gray-700">Data de Criação:</label>
+                        <p class="text-gray-900">${formatarDataCompleta(agendamento.dataCriacao)}</p>
+                    </div>
+                    ${agendamento.dataConclusao ? `
+                    <div class="col-span-2">
+                        <label class="font-semibold text-gray-700">Data de Conclusão:</label>
+                        <p class="text-gray-900">${formatarDataCompleta(agendamento.dataConclusao)}</p>
+                    </div>
+                    ` : ''}
+                </div>
+            `;
+
+            // Ações disponíveis baseadas no status
+            let actionsHTML = '';
+            if (agendamento.status === 'pendente') {
+                actionsHTML = `
+                    <button onclick="mudarStatus(${id}, 'andamento')" class="flex-1 bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-600 transition">
+                        <i class="fas fa-play mr-2"></i>Iniciar
+                    </button>
+                    <button onclick="mudarStatus(${id}, 'cancelado')" class="flex-1 bg-red-500 text-white py-2 rounded-lg hover:bg-red-600 transition">
+                        <i class="fas fa-times mr-2"></i>Cancelar
+                    </button>
+                `;
+            } else if (agendamento.status === 'andamento') {
+                actionsHTML = `
+                    <button onclick="mudarStatus(${id}, 'concluido')" class="flex-1 bg-green-500 text-white py-2 rounded-lg hover:bg-green-600 transition">
+                        <i class="fas fa-check mr-2"></i>Concluir
+                    </button>
+                    <button onclick="mudarStatus(${id}, 'pendente')" class="flex-1 bg-yellow-500 text-white py-2 rounded-lg hover:bg-yellow-600 transition">
+                        <i class="fas fa-undo mr-2"></i>Voltar para Pendente
+                    </button>
+                `;
+            } else if (agendamento.status === 'concluido') {
+                actionsHTML = `
+                    <button onclick="mudarStatus(${id}, 'andamento')" class="flex-1 bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-600 transition">
+                        <i class="fas fa-undo mr-2"></i>Reabrir
+                    </button>
+                `;
+            }
+
+            actionsHTML += `
+                <button onclick="deletarAgendamento(${id})" class="flex-1 bg-gray-500 text-white py-2 rounded-lg hover:bg-gray-600 transition">
+                    <i class="fas fa-trash mr-2"></i>Excluir
+                </button>
+            `;
+
+            modalActions.innerHTML = actionsHTML;
+            document.getElementById('modal-detalhes').classList.remove('hidden');
+        }
+
+        function fecharModal() {
+            document.getElementById('modal-detalhes').classList.add('hidden');
+        }
+
+        function mudarStatus(id, novoStatus) {
+            const agendamento = window.agendamentos.find(ag => ag.id === id);
+            if (agendamento) {
+                agendamento.status = novoStatus;
+                if (novoStatus === 'concluido') {
+                    agendamento.dataConclusao = new Date();
+                }
+                carregarAgendamentos();
+                fecharModal();
+                alert(`✅ Agendamento marcado como ${getStatusText(novoStatus)}!`);
+            }
+        }
+
+        function deletarAgendamento(id) {
+            if (confirm('⚠️ Tem certeza que deseja excluir este agendamento?\nEsta ação não pode ser desfeita.')) {
+                const index = window.agendamentos.findIndex(ag => ag.id === id);
+                if (index !== -1) {
+                    window.agendamentos.splice(index, 1);
+                    carregarAgendamentos();
+                    fecharModal();
+                    alert('✅ Agendamento excluído com sucesso!');
+                }
+            }
+        }
+
+        // Funções auxiliares
+        function getStatusText(status) {
+            const statusMap = {
+                'pendente': 'Pendente',
+                'andamento': 'Em Andamento', 
+                'concluido': 'Concluído',
+                'cancelado': 'Cancelado'
+            };
+            return statusMap[status] || status;
+        }
+
+        function formatarData(data) {
+            return new Date(data + 'T00:00:00').toLocaleDateString('pt-BR');
+        }
+
+        function formatarDataCompleta(data) {
+            return data.toLocaleDateString('pt-BR') + ' ' + data.toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'});
+        }
+
+        function formatarDataRelativa(data) {
+            const diff = Math.floor((new Date() - data) / (1000 * 60 * 60 * 24));
+            if (diff === 0) return 'Hoje';
+            if (diff === 1) return 'Ontem';
+            if (diff < 7) return `Há ${diff} dias`;
+            if (diff < 30) return `Há ${Math.floor(diff/7)} semana(s)`;
+            return `Há ${Math.floor(diff/30)} mês(es)`;
+        }
+
+        // Inicializar - CORRIGIDO para mostrar CADASTRO primeiro
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log("DOM carregado, inicializando...");
+            inicializarDemo();
+            showSection('cadastro'); // AGORA MOSTRA CADASTRO PRIMEIRO
+            showCadastroTab('client');
+            updateNavigation();
+            
+            // Preencher automaticamente os campos de login (para quando for para login)
+            document.getElementById('clientWhatsAppLogin').value = "(11) 99999-0000";
+            document.getElementById('clientPasswordLogin').value = "123456";
+            document.getElementById('adminEmailLogin').value = "admin@cgpl.com";
+            document.getElementById('adminPasswordLogin').value = "123456";
+        });
     </script>
 </body>
 </html>
