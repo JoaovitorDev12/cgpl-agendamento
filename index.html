@@ -40,6 +40,9 @@
                     <button onclick="showSection('novo-agendamento')" class="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 transition">
                         <i class="fas fa-plus mr-2"></i>Novo Agendamento
                     </button>
+                    <button onclick="showSection('login')" class="bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600 transition">
+                        <i class="fas fa-sign-in-alt mr-2"></i>Login
+                    </button>
                 </div>
             </div>
         </div>
@@ -47,8 +50,64 @@
 
     <!-- Main Content -->
     <main class="container mx-auto px-4 py-8">
-        <!-- Seção de Agendamentos -->
-        <div id="agendamentos-section">
+        <!-- Seção Login -->
+        <div id="login-section">
+            <div class="max-w-md mx-auto">
+                <div class="glass-card rounded-xl p-8">
+                    <h2 class="text-3xl font-bold text-gray-800 mb-6 text-center">Login</h2>
+                    
+                    <div class="flex border-b mb-6">
+                        <button class="flex-1 py-2 font-medium border-b-2 border-blue-600 text-blue-600" onclick="showLoginTab('client')">
+                            Cliente
+                        </button>
+                        <button class="flex-1 py-2 font-medium text-gray-500" onclick="showLoginTab('planner')">
+                            Planejador
+                        </button>
+                    </div>
+
+                    <!-- Login Cliente -->
+                    <div id="client-login" class="space-y-4">
+                        <div>
+                            <label class="block text-gray-700 font-semibold mb-2">Primeiro Nome</label>
+                            <input type="text" id="clientName" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" placeholder="Seu primeiro nome">
+                        </div>
+                        <div>
+                            <label class="block text-gray-700 font-semibold mb-2">Últimos 4 dígitos do WhatsApp</label>
+                            <input type="text" id="whatsappLast4" maxlength="4" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" placeholder="0000">
+                        </div>
+                        <button onclick="loginClient()" class="w-full bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 transition">
+                            <i class="fas fa-sign-in-alt mr-2"></i>Entrar como Cliente
+                        </button>
+                    </div>
+
+                    <!-- Login Planejador -->
+                    <div id="planner-login" class="space-y-4 hidden">
+                        <div>
+                            <label class="block text-gray-700 font-semibold mb-2">Nome</label>
+                            <input type="text" id="plannerName" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" placeholder="Seu nome">
+                        </div>
+                        <div>
+                            <label class="block text-gray-700 font-semibold mb-2">Senha</label>
+                            <input type="password" id="plannerPassword" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" placeholder="Senha do planejador">
+                        </div>
+                        <button onclick="loginPlanner()" class="w-full bg-green-600 text-white py-3 rounded-lg font-semibold hover:bg-green-700 transition">
+                            <i class="fas fa-user-cog mr-2"></i>Entrar como Planejador
+                        </button>
+                    </div>
+
+                    <div class="mt-6 p-4 bg-yellow-50 border border-yellow-200 rounded-md">
+                        <p class="text-sm text-yellow-800 text-center">
+                            <strong>Demo:</strong> Use qualquer nome + últimos 4 dígitos do WhatsApp
+                            <br>
+                            <strong>Planejador:</strong> senha: <code>123456</code>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Seção de Agendamentos (após login) -->
+        <div id="agendamentos-section" class="hidden">
             <div class="flex justify-between items-center mb-8">
                 <h2 class="text-3xl font-bold text-white">Agendamentos Ativos</h2>
                 <div class="bg-white/20 backdrop-blur-sm rounded-lg px-4 py-2">
@@ -160,10 +219,60 @@
     </main>
 
     <script>
+        let currentUser = null;
+
         function showSection(section) {
+            document.getElementById('login-section').classList.add('hidden');
             document.getElementById('agendamentos-section').classList.add('hidden');
             document.getElementById('novo-agendamento-section').classList.add('hidden');
             document.getElementById(section + '-section').classList.remove('hidden');
+        }
+
+        function showLoginTab(tab) {
+            document.getElementById('client-login').classList.add('hidden');
+            document.getElementById('planner-login').classList.add('hidden');
+            document.getElementById(tab + '-login').classList.remove('hidden');
+            
+            // Update tab buttons
+            document.querySelectorAll('button[onclick^="showLoginTab"]').forEach(btn => {
+                btn.classList.remove('border-b-2', 'border-blue-600', 'text-blue-600');
+                btn.classList.add('text-gray-500');
+            });
+            event.target.classList.add('border-b-2', 'border-blue-600', 'text-blue-600');
+            event.target.classList.remove('text-gray-500');
+        }
+
+        function loginClient() {
+            const name = document.getElementById('clientName').value;
+            const whatsapp = document.getElementById('whatsappLast4').value;
+            
+            if (!name || !whatsapp) {
+                alert('Por favor, preencha todos os campos!');
+                return;
+            }
+
+            currentUser = { name: name, role: 'client' };
+            alert('✅ Login realizado com sucesso!\nBem-vindo, ' + name + '!');
+            showSection('agendamentos');
+        }
+
+        function loginPlanner() {
+            const name = document.getElementById('plannerName').value;
+            const password = document.getElementById('plannerPassword').value;
+            
+            if (!name || !password) {
+                alert('Por favor, preencha todos os campos!');
+                return;
+            }
+
+            if (password !== '123456') {
+                alert('❌ Senha incorreta! Use: 123456');
+                return;
+            }
+
+            currentUser = { name: name, role: 'planner' };
+            alert('✅ Login como Planejador realizado!\nBem-vindo, ' + name + '!');
+            showSection('agendamentos');
         }
 
         function agendarServico() {
@@ -171,7 +280,8 @@
         }
 
         // Inicializar
-        showSection('agendamentos');
+        showSection('login');
+        showLoginTab('client');
     </script>
 </body>
 </html>
